@@ -26,10 +26,13 @@ dependencies {
 	//sqs
 	implementation("org.springframework.cloud:spring-cloud-aws-messaging:${property("springCloudVersion")}")
 	implementation("org.springframework:spring-messaging:${property("springMessagingVersion")}")
+	//coroutine
+	runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }
 kotlin {
 	compilerOptions {

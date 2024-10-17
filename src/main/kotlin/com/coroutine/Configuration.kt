@@ -7,6 +7,9 @@ import com.amazonaws.services.sns.AmazonSNS
 import com.amazonaws.services.sns.AmazonSNSAsyncClientBuilder
 import com.amazonaws.services.sqs.AmazonSQSAsync
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cloud.aws.messaging.config.QueueMessageHandlerFactory
 import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
@@ -62,6 +65,10 @@ class Configuration(
         return simpleListenerContainer
     }
 
+    @Bean
+    fun coroutineScope(): CoroutineScope {
+        return CoroutineScope(Dispatchers.IO + SupervisorJob())
+    }
 
     companion object {
         fun getEndpointConfiguration(host: String, region: String): AwsClientBuilder.EndpointConfiguration {
