@@ -1,4 +1,4 @@
-package com.coroutine.coroutine
+package com.coroutine
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
