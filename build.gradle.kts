@@ -28,7 +28,10 @@ dependencies {
 	implementation("org.springframework:spring-messaging:${property("springMessagingVersion")}")
 	//coroutine
 	runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
-
+	//r2dbc
+	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+	implementation("org.postgresql:postgresql")
+	implementation("org.postgresql:r2dbc-postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
