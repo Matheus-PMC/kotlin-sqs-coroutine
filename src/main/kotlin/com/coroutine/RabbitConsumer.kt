@@ -2,24 +2,25 @@ package com.coroutine
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy
-import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener
+import org.springframework.amqp.rabbit.annotation.RabbitListener
+import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Component
 
 
 @Component
-class SQSConsumer(
+class RabbitConsumer(
     private val coroutineScope: CoroutineScope,
     private val messageRepository: MessageRepository
 ) : Loggable() {
 
-    @SqsListener("sample-queue", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
-    fun receiveMessage(message: String) {
+    @RabbitListener(queues = ["sample-queue"])
+    fun receiveMessage(@Payload message: String) {
         coroutineScope.launch {
             runCatching {
-                log.info("SQS Message Received")
+                log.info("Rabbit Message Received")
             }.onSuccess {
-                log.info("SQS Message Received com Sucesso! : {}", message)
+                log.info("Rabbit Message Received com Sucesso! : {}", message)
+
                 val messageEntity = MessageEntity(message = message)
 
                 messageRepository.save(messageEntity)
@@ -27,8 +28,10 @@ class SQSConsumer(
                     .subscribe()
                     .also { log.info("Salvo com sucesso com Sucesso! : {}", message) }
 
+                val test: List<MessageEntity> = messageRepository.findAll().toStream().toList()
+                println(test)
             }.onFailure { exception ->
-                log.error("SQS Message Received com Erro! : {}", exception.message)
+                log.error("Rabbit Message Received com Erro! : {}", exception.message)
             }
         }
     }

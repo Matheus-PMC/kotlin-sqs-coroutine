@@ -1,10 +1,21 @@
 package com.coroutine
 
 import org.springframework.data.annotation.Id
-import java.util.UUID
+import org.springframework.data.domain.Persistable
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.Table
+import java.util.*
 
-data class MessageEntity (
+@Table("\"table-message\"")
+data class MessageEntity(
     @Id
-    val id: String = UUID.randomUUID().toString(),
+    @Column("id")
+    private var _id: String? = null, // Propriedade privada para evitar conflitos
+    @Column("message")
     val message: String
-)
+) : Persistable<String> {
+
+    override fun getId(): String = _id ?: UUID.randomUUID().toString()
+
+    override fun isNew(): Boolean = _id == null
+}

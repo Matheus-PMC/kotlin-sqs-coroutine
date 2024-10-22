@@ -20,15 +20,19 @@ repositories {
 
 dependencies {
 
-	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	//sqs
 	implementation("org.springframework.cloud:spring-cloud-aws-messaging:${property("springCloudVersion")}")
 	implementation("org.springframework:spring-messaging:${property("springMessagingVersion")}")
+	//rabbit
+	implementation("org.springframework.boot:spring-boot-starter-amqp")
+	testImplementation("org.springframework.amqp:spring-rabbit-test")
 	//coroutine
 	runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 	//r2dbc
+	implementation("io.r2dbc:r2dbc-spi")
 	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 	implementation("org.postgresql:postgresql")
 	implementation("org.postgresql:r2dbc-postgresql")

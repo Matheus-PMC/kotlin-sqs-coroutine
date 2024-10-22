@@ -23,3 +23,16 @@ services:
       - '5432:5432'
     volumes:
       - ~/apps/postgres:/var/lib/postgresql/data
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=password
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+networks:
+  default:
+    driver: bridge
