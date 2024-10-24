@@ -1,4 +1,4 @@
-package com.coroutine
+package com.coroutine.adapter.out.entity
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Persistable

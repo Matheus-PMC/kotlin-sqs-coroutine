@@ -1,4 +1,4 @@
-package com.coroutine
+package com.coroutine.adapter.configuration
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicAWSCredentials
@@ -15,9 +15,11 @@ import org.springframework.cloud.aws.messaging.config.QueueMessageHandlerFactory
 import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
 import org.springframework.cloud.aws.messaging.listener.QueueMessageHandler
 import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerContainer
+import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.context.support.ReloadableResourceBundleMessageSource
 
 
 @Configuration
@@ -68,6 +70,14 @@ class Configuration(
     @Bean
     fun coroutineScope(): CoroutineScope {
         return CoroutineScope(Dispatchers.IO + SupervisorJob())
+    }
+
+    @Bean
+    fun messageSource(): MessageSource {
+        val messageSource = ReloadableResourceBundleMessageSource()
+        messageSource.setBasename("classpath:messages")
+        messageSource.setDefaultEncoding("UTF-8")
+        return messageSource
     }
 
     companion object {
