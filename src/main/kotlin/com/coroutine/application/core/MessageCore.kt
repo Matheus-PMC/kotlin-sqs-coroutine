@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 class MessageCore(
     private val messageDataPort: MessageDataPort
 ) {
-    fun recebendoMensagem(message: String) {
+    suspend fun recebendoMensagem(message: String) {
         messageDataPort.salvarMensagem(message)
     }
 }

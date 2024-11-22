@@ -1,12 +1,10 @@
 package com.coroutine.adapter.`in`
 
-import com.coroutine.extension.LoggableExtension
-import com.coroutine.adapter.out.entity.MessageEntity
-import com.coroutine.adapter.out.repository.MessageRepository
 import com.coroutine.application.core.MessageCore
+import com.coroutine.extension.LoggableExtension
 import com.coroutine.extension.MessageExtension
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import org.springframework.cloud.aws.messaging.listener.Acknowledgment
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy
 import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener
 import org.springframework.stereotype.Component
@@ -19,17 +17,20 @@ class SQSConsumer(
     private val messageCore: MessageCore
 ) : LoggableExtension() {
 
-    @SqsListener("sample-queue", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
-    fun recebendoMensagemSQS(message: String) {
-        coroutineScope.launch {
-            runCatching {
-                log.info(messageExtension.buscarMensagem("sqs-mensagem", message))
+    @SqsListener("sample-queue", deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+    fun recebendoMensagemSQS(message: String, acknowledgment: Acknowledgment) = coroutineScope.launch {
+        log.info("Entrou: $message")
+        runCatching {
+            withContext(Dispatchers.IO) {
                 messageCore.recebendoMensagem(message)
-            }.onSuccess {
-                log.info(messageExtension.buscarMensagem("mensagem-finalizada-com-sucesso", message))
-            }.onFailure { e ->
-                log.error(messageExtension.gerarLogsException("mensagem-finalizada-com-erro", message, e))
             }
-        }
-    }
+        }.onSuccess {
+            log.info("mensagem finalizada com sucesso: $message")
+            acknowledgment.acknowledge()
+            log.info("Acknowledge: $message")
+        }.onFailure {
+            log.error("mensagem finalizada com erro: $message")
+        }.also { println("MDC CLEAR: $message") }
+        println("Finalizou Fluxo completo! $message")
+    }.ensureActive()
 }
